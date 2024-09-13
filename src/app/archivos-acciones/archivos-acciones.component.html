@@ -1,3 +1,22 @@
-<p>archivos-acciones works!</p>
-<app-archivos-mostrar></app-archivos-mostrar>
-<app-archivo-form></app-archivo-form>
+<div class="container-fluid m-1 p-1">
+  <div class="row align-items-center">
+      <div class="col m-1">
+          <h4>Archivos</h4>
+      </div>
+      <div class="col-2 m-1">            
+          <select class="form-select bg-primary text-light border-light" name="" id="">
+            <option value="" selected disabled hidden>Seleccionar</option>
+            <option (click)="btnNuevoArchivo()" class="bg-light border border-light text-dark m-0 p-0" value="">Nuevo</option>
+            <option (click)="btnBorrarArchivos()" class="bg-light border border-light text-dark m-0 p-0" value="">Borrar</option>
+          </select>
+        </div>
+  </div>
+</div>
+
+  <hr>
+
+  
+
+<app-archivos-mostrar [deleteFiles]="btnDeleteFilesClicked" (resetBtnDeleteFilesClicked)="resetBtnDeleteFiles($event)"
+>
+</app-archivos-mostrar>

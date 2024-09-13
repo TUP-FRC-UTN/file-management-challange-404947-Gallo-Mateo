@@ -1,3 +1,14 @@
 <div class="container-fluid border border-dark m-1">
-<app-archivos-acciones></app-archivos-acciones>
+    @if (mostrarFiles == true){
+        <app-archivos-acciones (onNuevoArchivo)="alternarVista()"></app-archivos-acciones>    
+    }
+    
+    @if (mostrarFiles == false){
+        <app-archivo-form (onVolver)="alternarVista()"></app-archivo-form>
+    }
+    
+    <!-- <button (click)="alternarVista()" class="btn btn-primary">
+      {{ mostrarFiles ? 'Mostrar Formulario' : 'Mostrar Archivos' }}
+    </button> -->
+
 </div>

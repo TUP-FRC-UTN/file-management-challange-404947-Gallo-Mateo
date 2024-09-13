@@ -43,6 +43,13 @@ export const FILE_LIST: FileItem[] = [
     owners: [owner1, owner2],
   },
   {
+    id: '69',
+    name: 'bocaaaaaaa',
+    creation: new Date(),
+    type: FileType.FOLDER,
+    owners: [owner1, owner2, owner5],
+  },
+  {
     id: '95',
     name: 'empty folder',
     creation: new Date(),

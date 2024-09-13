@@ -1,1 +1,37 @@
-<p>archivos-mostrar works!</p>
+    <div class="container-fluid m-1 p-1">
+        <table class="table">
+            <thead>
+              <tr>
+                <th class="col-1 fw-bold">#</th>
+                <th class="col-3 fw-bold">Nombre</th>
+                <th class="col-3 fw-bold">Fecha</th>
+                <th class="col-5 fw-bold">Dueños</th>
+              </tr>
+            </thead>
+            <tbody>
+            @for(file of fileList; track file; let index = $index){ 
+                <tr>
+                    <td><input (change)="agregarOQuitar(file.id)" type="checkbox" class="form-checkbox" name="" id=""></td>
+                    <td>
+                        @if(file.type === typeFolder){
+                            <i class="bi bi-folder"></i>
+                        }
+                        @else{
+                            <i class="bi bi-file-earmark"></i>
+                        }
+                        {{ file.name }}
+                    </td>
+                    <td>{{ file.creation | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                    @for(owner of file.owners; track owner; let index = $index){ 
+                        <span>
+                            <img src="{{ owner.avatarUrl }}" style="width: 40px; height: 40px; border-radius: 50%;" alt="">
+                        </span>
+                    }
+                    </td>
+                </tr>
+            }
+            </tbody>
+          </table>
+          
+      </div>

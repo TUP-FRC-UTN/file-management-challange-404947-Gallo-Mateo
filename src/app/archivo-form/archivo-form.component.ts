@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Form, FormsModule, NgForm } from '@angular/forms';
-import { FileItem, FileOwner, FileType } from '../../models/file.item.model';
+import { FileItem, FileOwner, FileType, } from '../../models/file.item.model';
+import { FILE_LIST, OWNERS } from '../../data/file.storage';
 
 @Component({
   selector: 'app-archivo-form',
@@ -11,33 +12,39 @@ import { FileItem, FileOwner, FileType } from '../../models/file.item.model';
   styleUrl: './archivo-form.component.css'
 })
 export class ArchivoFormComponent {
-  emptyFileOwnersList: FileOwner[] = [
-    { name: '', avatarUrl: ''}
-  ];
+  // agarra solo los nombres del enum
+  fileTypes = Object.keys(FileType).filter(key => isNaN(Number(key))); 
+  //agarra solo los fileItems del tipo FOLDER
+  fileFolders = FILE_LIST.filter(x => x.type === FileType.FOLDER);
+  //list de Owners
+  ownersList: FileOwner[] = OWNERS;
+
+  fileOwnersDinamyc: FileOwner[] | undefined;
 
   fileItem: FileItem = {
     id: "",
     name: "",
-    creation: new Date(),
-    owners: this.emptyFileOwnersList,
-    type: FileType.FILE,
+    creation: undefined,
+    owners: [],
+    type: undefined,
     parentId: ""
   };
 
   //completar
-  saveForm(form: NgForm){
-
+  // select dinámico
+  mostrarDuenioExtra() {
+    //this.fileOwnersList.push({ name: '', avatarUrl: '' });
   }
 
-  mostrarDuenioExtra(){
-
-  }
-
+  @Output() onVolver = new EventEmitter<boolean>;
   volver(){
-
+    this.onVolver.emit(true)
   }
 
-  guardarForm(){
-    
+  guardarForm(form: NgForm){
+    if(form.valid){
+      this.fileItem.id = Math.random().toString();
+      console.log(this.fileItem, " | ", this.fileItem.owners);
+    }
   }
 }

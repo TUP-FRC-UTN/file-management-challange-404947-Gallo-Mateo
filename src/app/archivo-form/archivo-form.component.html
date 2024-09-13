@@ -1,75 +1,143 @@
 <div class="container-fluid ng-invalid ng-valid border border-primary m-1">
     <h3>Crear archivo</h3>
 
-    <form #form="ngForm" (ngSubmit)="saveForm(form)" class="m-1 p-2">
-
-        <!-- revisarrrrrr pq ng-valid y ng-invalid no se aplican -->
+    <form #form="ngForm" (ngSubmit)="guardarForm(form)" class="m-1 p-2">
 
         <div class="mb-3">
           <label for="name" class="form-label">Nombre</label>
-          <input name="name" type="text" class="form-control"
-                 id="name" placeholder="Ingrese el nombre"
-                 required minlength="4"
+          <input name="name" type="text" class="form-control" id="name" placeholder="Ingrese el nombre"
+                 required 
                  #name="ngModel"
                  [(ngModel)]="fileItem.name"
                  [ngClass]="{
                    'is-invalid': name.invalid && (name.dirty || name.touched),
                    'is-valid': name.valid && (name.dirty || name.touched)
                  }">
-          
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="form-text text-danger">
 
-            <!-- <div *ngIf="name.errors?.['required']">Name is required.</div>
-            <div *ngIf="name.errors?.['minlength']">Name must be at least 4 characters long.</div> -->
+                @if (name.invalid && (name.dirty || name.touched)){
+                  <div class="form-text text-danger">
+                      <!-- <div *ngIf="name.errors?.['required']">Name is required.</div>
+                      <div *ngIf="name.errors?.['minlength']">Name must be at least 4 characters long.</div> -->
+                  </div>                
+                }
 
-          </div>
+                @if (name.valid && (name.dirty || name.touched)){
+                  <div class="form-text text-success"></div>                
+                }  
         </div>
         
 
         <div class="mb-3">
             <label for="creation" class="form-label">Fecha</label>
             <input name="creation" type="date" class="form-control" id="creation"
-                [value]="fileItem.creation | date:'dd/MM/yyyy'"
+                required
                 #creation="ngModel"
                 [(ngModel)]="fileItem.creation"
-            >
+                [ngClass]="{
+                  'is-invalid': creation.invalid && (creation.dirty || creation.touched),
+                  'is-valid': creation.valid && (creation.dirty || creation.touched)
+                }">
         </div>
+        @if (creation.invalid && (creation.dirty || creation.touched)){
+          <div class="form-text text-danger"></div>                
+        } 
+        @if (creation.valid && (creation.dirty || creation.touched)){
+          <div class="form-text text-success"></div>                
+        }
 
         <div class="mb-3">
             <label for="type" class="form-label">Tipo Archivo</label>
-            <select name="type" id="type"class="form-select" id="type"
+            <select name="type" id="type" class="form-select bg-light border border-secondary" id="type"
                 #type="ngModel"
                 [(ngModel)]="fileItem.type"
+                [ngClass]="{
+                  'is-valid': type.valid
+                }"
             >
+            @for(fileType of fileTypes; track fileType; let index = $index){
+              <option [value]="fileType">
+                {{ fileType }}
+              </option>
+            }
             </select>
         </div>
+        @if (type.valid && (type.touched || type.dirty)){
+          <div class="form-text text-success"></div>                
+        }
 
         <div class="mb-3">
             <label for="parentId" class="form-label">Carpeta</label>
-            <select name="parentId" id="parentId" class="form-select" 
+            <select name="parentId" id="parentId" class="form-select bg-light border border-secondary" 
                 #parentId="ngModel"
                 [(ngModel)]="fileItem.parentId"
+                [ngClass]="{
+                  'is-valid': parentId.valid
+                }"
             >
+            @for(folder of fileFolders; track folder; let index = $index){
+              <option [value]="folder.id">
+                {{ folder.name }}
+              </option>
+            }
+
+
             </select>
+            @if (parentId.valid && (parentId.touched || parentId.dirty)){
+              <div class="form-text text-success"></div>                
+            }
         </div>
 
         <div class="container-fluid">
-            <div class="row mb-3 align-items-end">
-              <div class="col">
-                <label for="owners" class="form-label">Dueños</label>
-                <select name="owners" id="owners" class="form-select" 
-                        #owners="ngModel"
-                        [(ngModel)]="fileItem.owners">
+          <div class="row mb-3 align-items-end">
+            <div class="col-11">
+              <label for="owners" class="form-label">Dueños</label>
+              <select name="owners" id="owners" class="form-select bg-light border border-secondary" 
+              #owners="ngModel"
+              [(ngModel)]="fileItem.owners"
+              [ngClass]="{
+                'is-valid': owners.valid
+              }">
+         
+              @for(ownerOption of ownersList; track ownerOption; let index = $index){
+                <option [value]="ownerOption">
+                  {{ ownerOption.name }}
+                </option>
+              }
+
+              </select>
+              @if (owners.valid && (owners.touched || owners.dirty)){
+                <div class="form-text text-success"></div>                
+              }
+            </div> 
+            <!-- 
+              <div *ngFor="let owner of fileItem.owners; let i = index" class="col-11">
+                <label for="owners{{i}}" class="form-label">Dueños</label>
+                <select name="owners{{i}}" id="owners{{i}}" class="form-select" 
+                [(ngModel)]="fileItem.owners[i]"
+                [ngClass]="{
+                  'is-valid': fileItem.owners[i]
+                }">
+           
+                @for(ownerOption of ownersList; track ownerOption; let index = $index){
+                  <option [value]="ownerOption">
+                    {{ ownerOption.name }}
+                  </option>
+                }
+
                 </select>
-              </div>
-          
-              <div class="col-auto">
-                <button (click)="mostrarDuenioExtra()" class="btn btn-secondary" name="mostrarDuenioExtra" id="mostrarDuenioExtra">
+                @if (fileItem.owners[i]){
+                  <div class="form-text text-success"></div>                
+                }
+              </div> 
+          -->
+            <div class="col-1 align-items-end">
+                <button (click)="mostrarDuenioExtra()" class="btn btn-secondary">
                   +
                 </button>
-              </div>
             </div>
-          </div>
+
+        </div>
+      </div>
           
           <div class="container-fluid">
             <div class="row mb-3">
@@ -80,7 +148,7 @@
               </div>
           
               <div class="col text-end">
-                <button (click)="guardarForm()" class="btn btn-primary" name="guardarForm" id="guardarForm">
+                <button [disabled]="form.invalid" type="submit" class="btn btn-primary" name="guardarForm" id="guardarForm">
                   Guardar
                 </button>
               </div>
