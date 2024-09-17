@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { Form, FormsModule, NgForm } from '@angular/forms';
 import { FileItem, FileOwner, FileType, } from '../../models/file.item.model';
 import { FILE_LIST, OWNERS } from '../../data/file.storage';
+import { FileItemService } from '../services/file-item.service';
 
 @Component({
   selector: 'app-archivo-form',
@@ -12,6 +13,8 @@ import { FILE_LIST, OWNERS } from '../../data/file.storage';
   styleUrl: './archivo-form.component.css'
 })
 export class ArchivoFormComponent {
+  //service
+  private fileService = inject(FileItemService);
   // agarra solo los nombres del enum
   fileTypes = Object.keys(FileType).filter(key => isNaN(Number(key))); 
   //agarra solo los fileItems del tipo FOLDER
@@ -19,7 +22,11 @@ export class ArchivoFormComponent {
   //list de Owners
   ownersList: FileOwner[] = OWNERS;
 
-  fileOwnersDinamyc: FileOwner[] | undefined;
+  //lista de owners, q al hacer submit, se asignaran al fileItem
+  fileOwnersDinamyc: FileOwner[] = [{
+    name: undefined,
+    avatarUrl: undefined,
+  }];
 
   fileItem: FileItem = {
     id: "",
@@ -33,7 +40,7 @@ export class ArchivoFormComponent {
   //completar
   // select dinámico
   mostrarDuenioExtra() {
-    //this.fileOwnersList.push({ name: '', avatarUrl: '' });
+    this.fileOwnersDinamyc.push({ name: undefined, avatarUrl: undefined });
   }
 
   @Output() onVolver = new EventEmitter<boolean>;
@@ -41,10 +48,31 @@ export class ArchivoFormComponent {
     this.onVolver.emit(true)
   }
 
+  @Output() onFileItemCreated = new EventEmitter<FileItem>;
   guardarForm(form: NgForm){
     if(form.valid){
       this.fileItem.id = Math.random().toString();
-      console.log(this.fileItem, " | ", this.fileItem.owners);
+
+      // Set q almacena los name unicos
+      const uniqueOwners = new Set<string>();
+
+      // filtra los owners q si tienen name y no esta repetido
+      const validOwners = this.fileOwnersDinamyc.filter(owner => {
+        if (owner.name !== undefined && !uniqueOwners.has(owner.name)) {
+          uniqueOwners.add(owner.name); 
+          return true; 
+        }
+        return false;
+      });
+
+      // asigna los owners validos al fileItem.owners
+      this.fileItem.owners = validOwners;      
+      
+      console.log(this.fileItem);
+
+      //this.onFileItemCreated.emit(this.fileItem);
+      this.fileService.add(this.fileItem);
+      this.volver();
     }
   }
 }

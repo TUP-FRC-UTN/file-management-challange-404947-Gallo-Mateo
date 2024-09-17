@@ -1,35 +1,31 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FILE_LIST } from '../../data/file.storage';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FileOwner, FileItem, FileType } from '../../models/file.item.model';
 import { FormsModule } from '@angular/forms';
+import { FileItemService } from '../services/file-item.service';
 import Swal from 'sweetalert2';
 
 
 @Component({
   selector: 'app-archivos-mostrar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ],
   templateUrl: './archivos-mostrar.component.html',
   styleUrl: './archivos-mostrar.component.css'
 })
-export class ArchivosMostrarComponent implements OnChanges {
-
+export class ArchivosMostrarComponent implements OnChanges, OnInit {
+  ngOnInit(): void {
+    this.fileList = this.fileService.getAll();  
+  }
+  
+  //service
+  private fileService = inject(FileItemService);
+  //lista de files (del service)
+  fileList : FileItem[] = [];
   //tipos de File
   typeFile = FileType.FILE;
   typeFolder = FileType.FOLDER;
-
-  fileList = FILE_LIST.sort((a: FileItem, b: FileItem) => {
-    // compara primero por type (FOLDER va antes que FILE)
-    if (a.type === FileType.FOLDER && b.type === FileType.FILE) {
-      return -1; 
-    } else if (a.type === FileType.FILE && b.type === FileType.FOLDER) {
-      return 1; 
-    }
-  
-    // else, ordena por orden alfabetico
-    return a.name.localeCompare(b.name);
-  });
 
   //resetea este campo en el component padre para poder borrar de nuevo
   @Output() resetBtnDeleteFilesClicked = new EventEmitter<boolean>;
