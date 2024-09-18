@@ -18,7 +18,7 @@ export class ArchivoFormComponent {
   // agarra solo los nombres del enum
   fileTypes = Object.keys(FileType).filter(key => isNaN(Number(key))); 
   //agarra solo los fileItems del tipo FOLDER
-  fileFolders = FILE_LIST.filter(x => x.type === FileType.FOLDER);
+  fileFolders = this.fileService.getAllFolders();
   //list de Owners
   ownersList: FileOwner[] = OWNERS;
 

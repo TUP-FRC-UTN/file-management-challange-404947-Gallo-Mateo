@@ -44,8 +44,13 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.isConfirmed) {
-            this.fileList = this.fileList.filter(file => !this.filesToDelete?.includes(file.id));
-            
+            //console.log("Antes:" ,this.fileService); //confirmo, ahora borra de nuevo
+            //se borran los fileItems en el array del Service
+            this.fileService.delete(this.filesToDelete);
+            //se devuelve el array modificado
+            this.fileList = this.fileService.getAll();  
+            //console.log("DEspues:" ,this.fileService); //confirmo, ahora borra de nuevo
+
             // se resetea el atributo en el component padre y se limpia la lista de Files a borrar
             this.resetBtnDeleteFilesClicked.emit(false);
             this.deleteFiles = false;
@@ -56,8 +61,11 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
         });
       } else {
         // un solo archivo, se elimina sin preguntar
-        this.fileList = this.fileList.filter(file => !this.filesToDelete?.includes(file.id));
-        
+        //se borra el fileItem en el array del Service
+        this.fileService.delete(this.filesToDelete);
+        //se devuelve el array modificado
+        this.fileList = this.fileService.getAll(); 
+
         // se resetea el atributo en el component padre y se limpia la lista de Files a borrar
         this.resetBtnDeleteFilesClicked.emit(false);
         this.deleteFiles = false;
@@ -66,7 +74,7 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
     }
   }
 
-  filesToDelete?: string[];
+  filesToDelete: string[] | undefined;
   agregarOQuitar(idFile: string) {
     if (!this.filesToDelete) {
       this.filesToDelete = [];
