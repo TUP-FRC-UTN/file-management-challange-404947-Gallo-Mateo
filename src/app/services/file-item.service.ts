@@ -54,9 +54,9 @@ export class FileItemService {
 
     this.fileList.sort((a: FileItem, b: FileItem) => {
       // compara primero por type (FOLDER va antes que FILE)
-      if (a.type === FileType.FOLDER && b.type === FileType.FILE) {
+      if (a.type == FileType.FOLDER && b.type == FileType.FILE) {
         return -1; 
-      } else if (a.type === FileType.FILE && b.type === FileType.FOLDER) {
+      } else if (a.type == FileType.FILE && b.type == FileType.FOLDER) {
         return 1; 
       }
     

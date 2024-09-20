@@ -24,14 +24,17 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
   //lista de files (del service)
   fileList : FileItem[] = [];
   //tipos de File
-  typeFile = FileType.FILE;
-  typeFolder = FileType.FOLDER;
+  fileType = FileType;
 
   //resetea este campo en el component padre para poder borrar de nuevo
-  @Output() resetBtnDeleteFilesClicked = new EventEmitter<boolean>;
+  @Output() resetBtnDeleteFilesClicked = new EventEmitter<void>;
 
   @Input() deleteFiles: boolean = false;
   ngOnChanges(changes: SimpleChanges): void {
+    this.fileList = this.fileService.getAll(); 
+    this.ordenarFiles(); 
+    console.log(this.fileList);
+
     if (this.deleteFiles && this.filesToDelete?.length) {
       // si la cant de elementos a borrar es mayor a 1, muestra la alerta pidiendo confirmacion
       if (this.filesToDelete.length > 1) {
@@ -44,15 +47,15 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
           cancelButtonText: 'Cancelar'
         }).then((result) => {
           if (result.isConfirmed) {
-            //console.log("Antes:" ,this.fileService); //confirmo, ahora borra de nuevo
             //se borran los fileItems en el array del Service
             this.fileService.delete(this.filesToDelete);
             //se devuelve el array modificado
-            this.fileList = this.fileService.getAll();  
-            //console.log("DEspues:" ,this.fileService); //confirmo, ahora borra de nuevo
+            this.fileList = this.fileService.getAll(); 
+            this.ordenarFiles(); 
+            console.log(this.fileList);
 
             // se resetea el atributo en el component padre y se limpia la lista de Files a borrar
-            this.resetBtnDeleteFilesClicked.emit(false);
+            this.resetBtnDeleteFilesClicked.emit();
             this.deleteFiles = false;
             this.filesToDelete = [];
           } else {
@@ -65,9 +68,11 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
         this.fileService.delete(this.filesToDelete);
         //se devuelve el array modificado
         this.fileList = this.fileService.getAll(); 
+        this.ordenarFiles();
+        console.log(this.fileList);
 
         // se resetea el atributo en el component padre y se limpia la lista de Files a borrar
-        this.resetBtnDeleteFilesClicked.emit(false);
+        this.resetBtnDeleteFilesClicked.emit();
         this.deleteFiles = false;
         this.filesToDelete = [];
       }
@@ -89,5 +94,19 @@ export class ArchivosMostrarComponent implements OnChanges, OnInit {
     }
     //para corroborar
     console.log(this.filesToDelete);
+  }
+
+  ordenarFiles(){
+    this.fileList.sort((a: FileItem, b: FileItem) => {
+      // compara primero por type (FOLDER va antes que FILE)
+      if (a.type == FileType.FOLDER && b.type == FileType.FILE) {
+        return -1; 
+      } else if (a.type == FileType.FILE && b.type == FileType.FOLDER) {
+        return 1; 
+      }
+    
+      // else, ordena por orden alfabetico
+      return a.name.localeCompare(b.name);
+    }); 
   }
 }

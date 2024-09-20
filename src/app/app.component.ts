@@ -17,9 +17,11 @@ export class AppComponent {
   title = 'file-management';
   
   mostrarFiles: boolean = true;
+  mostrarForm: boolean = false;
 
   // alternar entre components
   alternarVista() {
     this.mostrarFiles = !this.mostrarFiles;
+    this.mostrarForm = !this.mostrarForm;
   }
 }

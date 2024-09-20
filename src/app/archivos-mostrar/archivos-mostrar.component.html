@@ -13,10 +13,10 @@
                 <tr>
                     <td><input (change)="agregarOQuitar(file.id)" type="checkbox" class="form-checkbox" name="" id=""></td>
                     <td>
-                        @if(file.type === typeFolder){
+                        @if(file.type === fileType.FOLDER){
                             <i class="bi bi-folder"></i>
                         }
-                        @else{
+                        @else if(file.type === fileType.FILE){
                             <i class="bi bi-file-earmark"></i>
                         }
                         {{ file.name }}

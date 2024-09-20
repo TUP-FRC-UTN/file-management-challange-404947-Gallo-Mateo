@@ -21,6 +21,8 @@ export class ArchivoFormComponent {
   fileFolders = this.fileService.getAllFolders();
   //list de Owners
   ownersList: FileOwner[] = OWNERS;
+  //tipo de archivo
+  tipoArchivo: string = "";
 
   //lista de owners, q al hacer submit, se asignaran al fileItem
   fileOwnersDinamyc: FileOwner[] = [{
@@ -43,15 +45,21 @@ export class ArchivoFormComponent {
     this.fileOwnersDinamyc.push({ name: undefined, avatarUrl: undefined });
   }
 
-  @Output() onVolver = new EventEmitter<boolean>;
+  @Output() onVolver = new EventEmitter<void>;
   volver(){
-    this.onVolver.emit(true)
+    this.onVolver.emit()
   }
 
   @Output() onFileItemCreated = new EventEmitter<FileItem>;
   guardarForm(form: NgForm){
     if(form.valid){
-      this.fileItem.id = Math.random().toString();
+      this.fileItem.id = (Math.round(Math.random())*10).toString();
+
+      if(this.tipoArchivo == "FOLDER"){
+        this.fileItem.type = FileType.FOLDER;
+      } else if(this.tipoArchivo == "FILE"){
+        this.fileItem.type = FileType.FILE;
+      }
 
       // Set q almacena los name unicos
       const uniqueOwners = new Set<string>();
